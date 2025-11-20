@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class ExpensesServiceImpl implements ExpensesServiceDao {
+public class ExpensesServiceDaoImpl implements ExpensesServiceDao {
 
     @Autowired
     ExpensesRepo expensesRepo;

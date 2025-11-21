@@ -1,9 +1,7 @@
 package com.pfm.expense_service.service.impl;
 
 import com.pfm.expense_service.dao.ExpensesServiceDao;
-import com.pfm.expense_service.feign.BudugetService;
 import com.pfm.expense_service.feign.NotificationFeignClient;
-import com.pfm.expense_service.feign.UserFeignClient;
 import com.pfm.expense_service.model.Expense;
 import com.pfm.expense_service.model.dto.ExpenseDto;
 import com.pfm.expense_service.model.dto.NotificationDto;
@@ -12,89 +10,57 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 
 @Service
 public class ExpensesServiceImpl implements ExpensesService {
 
     @Autowired
-    ExpensesServiceDao expensesServiceDao;
+    private ExpensesServiceDao expensesServiceDao;
 
     @Autowired
-    UserFeignClient userFeignClient;
+    private NotificationFeignClient notificationFeignClient;
 
-    @Autowired
-    NotificationFeignClient notificationFeignClient;
-
-    @Autowired
-    BudugetService budugetService;
-
-
-    private static final String notify = "exemplification";
-
+    private static final String NOTIFY_CB = "expenseCircuitBreaker";
 
     @Override
-    public Expense createExpenses(ExpenseDto expenses) {
-        Map<String, Object> user;
-        Integer userid;
-        Map<String, Object> userbuduget;
-        NotificationDto notificationDto = new NotificationDto();
-        try {
-            user = userFeignClient.getUser(expenses.getUserId());
-            userid = (Integer) user.get("id");
-            if (user.isEmpty()) {
-                throw new RuntimeException("User not found with ID " + expenses.getUserId());
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("User not found with ID: " + expenses.getUserId());
-        }
+    public Expense createExpenses(ExpenseDto dto) {
 
-        try {
-            userbuduget = budugetService.getUserBudget(userid.longValue());
-            if (user == null || user.isEmpty()) {
-                throw new RuntimeException("User not found with ID " + expenses.getUserId());
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("User not found with ID: " + expenses.getUserId());
-        }
-
+        // 1. Save Expense
         Expense expense = new Expense();
-        expense.setCreatedAt(expense.getCreatedAt());
-
-        Integer getAmount = (Integer) userbuduget.get("amount");
-        if (expense.getAmount() > getAmount) {
-
-            notificationDto.setUserId(userid.longValue());
-            notificationDto.setAmount(expense.getAmount());
-            notificationDto.setMsg("expense is greater than budget increase your budget");
-            notifyWithFallback(notificationDto);
-
-        }
-
-        expense.setAmount(expense.getAmount());
-        expense.setCategory(expense.getCategory());
-        expense.setUserId(userid.longValue());
-        expense.setDescription(expense.getDescription());
+        expense.setUserId(dto.getUserId());
+        expense.setCategory(dto.getCategory());
+        expense.setAmount(dto.getAmount());
+        expense.setDescription(dto.getDescription());
+        expense.setCreatedAt(LocalDateTime.now());
         expensesServiceDao.createExpenses(expense);
-        notificationDto.setUserId(userid.longValue());
-        notificationDto.setAmount(expense.getAmount());
-        notificationDto.setCategory(expense.getCategory());
-        notificationDto.setDesc(expense.getDescription());
-        notificationDto.setMsg("expense create successfully ..");
+
+        // 2. Notify after save
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.setUserId(dto.getUserId());
+        notificationDto.setCategory(dto.getCategory());
+        notificationDto.setAmount(dto.getAmount());
+        notificationDto.setDesc(dto.getDescription());
+        notificationDto.setMsg("Expense created successfully.");
 
         notifyWithFallback(notificationDto);
+
         return expense;
     }
 
-    @CircuitBreaker(name = notify, fallbackMethod = "notifyFallback")
-    private void notifyWithFallback(NotificationDto resp) {
-        notificationFeignClient.createNotification(resp);
+    @CircuitBreaker(name = NOTIFY_CB, fallbackMethod = "notifyFallback")
+    private void notifyWithFallback(NotificationDto dto) {
+        notificationFeignClient.createNotification(dto);
     }
 
+    // fallback
+    private void notifyFallback(NotificationDto dto, Exception ex) {
+        System.out.println("Notification failed - stored for retry: " + ex.getMessage());
+        // You can store this notification to DB / Kafka for retry
+    }
 
     @Override
     public Expense getExpenses(Long id) {
-
         return expensesServiceDao.getExpenses(id);
     }
 }

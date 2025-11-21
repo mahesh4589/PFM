@@ -48,8 +48,10 @@ public class NotificationController {
         {
             return ResponseEntity.status(HttpStatus.OK).body(responceDto);
         }else {
-            return (ResponseEntity<ExpenceNotification>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+
+
 
 
     }

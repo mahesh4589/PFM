@@ -12,5 +12,5 @@ import java.util.Map;
 @FeignClient(name="budget-service", url="${budget.service.url:http://localhost:8082}")
 public interface BudugetService {
     @GetMapping("/api/budgets/user/{userid}")
-    Map<String, Object> getUserBudget(@PathVariable("id") Long id);
+    Map<String, Object> getUserBudget(@PathVariable("userid") Long id);
 }

@@ -2,6 +2,8 @@ package com.pfm.notification_service.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "ExpenseNotification")
 public class ExpenceNotification {
@@ -85,4 +87,14 @@ public class ExpenceNotification {
     }
     double Amount;
     String msg;
+
+    LocalDateTime CreatedAt;
+
+    public LocalDateTime getCreatedAt() {
+        return CreatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        CreatedAt = createdAt;
+    }
 }

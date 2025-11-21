@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name="notification-service", url="${notification.service.url:http://localhost:8084}")
 public interface NotificationFeignClient {
     @PostMapping("/api/notifications/expense-created")
-    void createNotification(@RequestBody NotificationDto payload);
+    NotificationDto createNotification(@RequestBody NotificationDto payload);
 }

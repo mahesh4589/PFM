@@ -71,4 +71,6 @@ public class UserDto {
         this.mobileNo = mobileNo;
     }
 
+    public void setName(String s) {
+    }
 }

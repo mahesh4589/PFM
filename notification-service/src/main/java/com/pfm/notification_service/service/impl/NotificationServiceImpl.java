@@ -12,58 +12,68 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 
 @Service
-public class NotificationServiceImpl<dto> implements NotificationService {
-
-
-    @Autowired
-    NotificationServiceDao notificationServiceDao;
+public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
-    UserFeignClient userFeignClient;
+    private NotificationServiceDao notificationServiceDao;
 
-    private static final String notify = "userservice";
+    @Autowired
+    private UserFeignClient userFeignClient;
 
+    private static final String NOTIFY_CB = "UserCircuitCB";
 
+    /** -------------------- BUDGET NOTIFICATION -------------------- **/
     @Override
     public Notification budgetCreated(BudgetDto dto) {
 
-        UserDto userRecord = userFeignClient.getUser(dto.getUserId());
-        userSeviceFallback(dto.getUserId(), "user service fallback messages");
-        String msg = "Amount :" + dto.getAmount() + "Buduget is created..";
-        Notification budgetNotification = new Notification();
-        budgetNotification.setCreatedAt(LocalDate.now().atStartOfDay());
-        budgetNotification.setType(dto.getCategory());
-        budgetNotification.setUserId(userRecord.getId());
-        budgetNotification.setMessage(msg);
-        notificationServiceDao.budgetCreated(budgetNotification);
+        // Validate User
+        UserDto user = getUserSafely(dto.getUserId());
 
-        return budgetNotification;
+        // Build Notification
+        Notification n = new Notification();
+        n.setUserId(user.getId());
+        n.setType("BUDGET_CREATED");
+        n.setMessage("Budget created for category: " + dto.getCategory() + " Amount: " + dto.getAmount());
+        n.setCreatedAt(LocalDateTime.now());
+
+        return notificationServiceDao.budgetCreated(n);
     }
 
+    /** -------------------- EXPENSE NOTIFICATION -------------------- **/
     @Override
     public ExpenceNotification expenseCreated(NotificationDto dto) {
+
+        // Validate User
+        UserDto user = getUserSafely(dto.getUserId());
+
+        // Build Expense Notification
         ExpenceNotification e = new ExpenceNotification();
-        UserDto userRecord = userFeignClient.getUser(dto.getUserId());
-        userSeviceFallback(dto.getUserId(), "user service fallback messages");
-        ExpenceNotification notificationDto = new ExpenceNotification();
-        notificationDto.setUserId(userRecord.getId());
-        notificationDto.setAmount(dto.getAmount());
-        notificationDto.setDesc(dto.getDesc());
-        notificationDto.setCategory(dto.getCategory());
-        notificationDto.setMsg(dto.getMsg());
-        notificationServiceDao.expenceCreated(notificationDto);
+        e.setUserId(user.getId());
+        e.setCategory(dto.getCategory());
+        e.setAmount(dto.getAmount());
+        e.setDesc(dto.getDesc());
+        e.setMsg(dto.getMsg());
+        e.setCreatedAt(LocalDateTime.now());
 
-        return null;
+        return notificationServiceDao.expenceCreated(e);
     }
 
-    @CircuitBreaker(name = notify, fallbackMethod = "userSeviceFallback")
-    private void userSeviceFallback(Long userId, String messages) {
-        userFeignClient.getUser(userId);
+    /** -------------------- Feign + Circuit Breaker -------------------- **/
+    @CircuitBreaker(name = NOTIFY_CB, fallbackMethod = "userFallback")
+    private UserDto getUserSafely(Long userId) {
+        return userFeignClient.getUser(userId);
     }
 
-
+    /** Fallback method called only when User Service is unavailable **/
+    private UserDto userFallback(Long userId, Throwable ex) {
+        UserDto u = new UserDto();
+        u.setId(userId);
+        u.setFirstName("Unknown User (Fallback)");
+        u.setEmailId("N/A");
+        System.out.println("User service unavailable. Fallback executed.");
+        return u;
+    }
 }

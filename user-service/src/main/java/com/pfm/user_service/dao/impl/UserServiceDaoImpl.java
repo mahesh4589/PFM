@@ -7,50 +7,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class UserServiceDaoImpl implements UserServiceDao {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    /** ---------- CREATE USER ---------- **/
     @Override
-    public boolean createUser(User u) {
-        boolean resp = false;
-        try {
-            userRepository.save(u);
-            return true;
-
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-            return false;
-        }
-
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
+    /** ---------- GET USER BY ID ---------- **/
     @Override
     public User getUserById(long id) {
-
-        Optional<User> responce = userRepository.findById(id);
-        return responce.get();
+        return userRepository.findById(id)
+                .orElse(null);   // return null if not found
     }
 
+    /** ---------- GET USER BY EMAIL ---------- **/
     @Override
     public User getUserByEmailId(String emailId) {
-       User resp= userRepository.getUserByEmailId(emailId);
-        return resp;
+        return userRepository.getUserByEmailId(emailId);
     }
 
+    /** ---------- GET ALL USERS ---------- **/
     @Override
     public List<User> findAllUser() {
-        List<User> listUserRecord = userRepository.findAll();
-        return listUserRecord;
+        return userRepository.findAll();
     }
 
+    /** ---------- UPDATE USER ---------- **/
     @Override
     public User updateUserInfo(User user) {
-
-        return userRepository.save(user);
+        return userRepository.save(user); // save() works for update also
     }
 }

@@ -5,7 +5,7 @@ import com.pfm.user_service.model.User;
 import java.util.List;
 
 public interface UserServiceDao {
-    boolean createUser(User u);
+    User createUser(User u);
 
     User getUserById(long id);
 

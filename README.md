@@ -1,36 +1,60 @@
-# PFM
+Personal Finance Manager – Microservices Project
 
-Users Service 
-create user :- http://localhost:8083/api/users/user
-payload :-
-{ 
-    "firstName":"mahesh",
-    "lastName":"kumar",
-    "emailId":"test9@gmail.com",
-    "password":"Pune@123",
-    "mobileNo":9423932673
-  
-  
-budgets :
-create budgets :- http://localhost:8082/api/budgets/create
-payload :- {
-     
-    "userId":2,
-    "category":"Food",
-    "amount":120,
-    "startDate":"11-12-2024",
-    "endDate":"11-12-2025"
+A Java Spring Boot–based microservices financial management system that allows users to manage budgets and expenses, and receive notifications when expenses exceed the allocated budget.
 
-}
+✔ User
+Register user
+LoginView profile
+Update user details
 
-expenses service
-expenses service - http://localhost:8085/api/expenses/create
-{
-    
+✔ Budget
+Create budget
+Update budget
+Get budget summary
+Validate expense > budget (notification triggered automatically)
 
-    "description":"foot",
-    "userId":1,
-    "category":"food",
-    "amount": 50
+✔ Expense
+Create expense
+If expense exceeds budget → triggers notification
 
-}}
+✔ Notification
+Stores and returns notification logs
+Accepts notifications from Budget and Expense services
+
+Clone the repository
+git clone https://github.com/mahesh4589/PFM.git
+
+
+User Service
+POST /api/users
+POST /api/users/login
+GET  /api/users/{id}
+PUT  /api/users/{id}
+GET  /api/users
+
+Budgets Service
+POST /api/budgets
+GET  /api/budgets/{id}
+GET  /api/budgets/user/{userId}
+PUT  /api/budgets/{id}
+
+Expense Service
+POST /api/expenses
+GET  /api/expenses/{id}
+GET  /api/expenses/user/{userId}
+
+Notifications Service
+POST /api/notifications/budget-created
+POST /api/notifications/expense-created
+GET  /api/notifications/user/{userId}
+
+
+
+
+
+
+
+
+/{id}
+GET  /api/budgets/user/{userId}
+PUT  /api/budgets/{id}

@@ -2,6 +2,11 @@ package com.pfm.user_service.model.dto;
 
 public class UserDto {
     Long id;
+    String firstName;
+    String lastName;
+    String emailId;
+    String password;
+    long mobileNo;
 
     public UserDto(Long id, String firstName, String lastName, String emailId, String password, long mobileNo) {
         this.id = id;
@@ -17,11 +22,6 @@ public class UserDto {
 
     }
 
-    String firstName;
-    String lastName;
-    String emailId;
-    String password;
-    long mobileNo;
 
     public Long getId() {
         return id;

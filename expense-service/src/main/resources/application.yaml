@@ -1,6 +1,8 @@
 server:
   port: 8085
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: expense-service
   h2:
@@ -25,3 +27,12 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+user:
+  service:
+    url: http://localhost:8083
+notification:
+  service:
+    url: http://localhost:8084
+budget:
+  service:
+    url: http://localhost:8082

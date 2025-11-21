@@ -1,11 +1,12 @@
 package com.pfm.expense_service.service;
 
-import com.pfm.expense_service.model.Expenses;
+import com.pfm.expense_service.model.Expense;
+import com.pfm.expense_service.model.dto.ExpenseDto;
 
 public interface ExpensesService {
-   
 
-    Expenses createExpenses(Expenses expenses);
 
-    Expenses getExpenses(Long id);
+    Expense createExpenses(ExpenseDto expenses);
+
+    Expense getExpenses(Long id);
 }

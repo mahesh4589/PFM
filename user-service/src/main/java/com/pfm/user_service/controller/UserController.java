@@ -14,7 +14,7 @@ import java.util.List;
 import static jakarta.ws.rs.core.Response.status;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/users/")
 public class UserController {
 
     @Autowired
@@ -22,7 +22,7 @@ public class UserController {
 
 
     @PostMapping("/user")
-    ResponseEntity<User> createUser(@Validated @RequestBody UserDto user) {
+    ResponseEntity<User> createUser(@RequestBody UserDto user) {
         User resp = userService.createUser(user);
         if (resp != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(resp);

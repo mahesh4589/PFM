@@ -1,22 +1,27 @@
-package com.pfm.expense_service.model;
+package com.pfm.expense_service.model.dto;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-@Entity
-@Table(name = "expenses")
-public class Expense {
+public class ExpenseDto {
 
-    public Expense(Long id, Long userId, String category, Double amount, LocalDateTime createdAt,String description) {
+    Long id;
+
+    String description;
+    Long userId;
+    String     category;
+    double    amount;
+    LocalDate createdAt;
+
+    public ExpenseDto(Long id, Long userId, String category, double amount, LocalDate createdAt, String description) {
         this.id = id;
         this.userId = userId;
         this.category = category;
         this.amount = amount;
         this.createdAt = createdAt;
-        this.description =description;
+        this.description = description;
     }
-    public Expense()
+
+  public ExpenseDto()
     {
 
     }
@@ -45,29 +50,21 @@ public class Expense {
         this.category = category;
     }
 
-    public Double getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private Long userId;
-    private String category;
-    private Double amount;
 
     public String getDescription() {
         return description;
@@ -77,7 +74,6 @@ public class Expense {
         this.description = description;
     }
 
-    private LocalDateTime createdAt;
 
-    private  String  description;
+
 }

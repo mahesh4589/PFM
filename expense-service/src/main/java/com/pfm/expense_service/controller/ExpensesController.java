@@ -1,7 +1,8 @@
 package com.pfm.expense_service.controller;
 
 
-import com.pfm.expense_service.model.Expenses;
+import com.pfm.expense_service.model.Expense;
+import com.pfm.expense_service.model.dto.ExpenseDto;
 import com.pfm.expense_service.service.ExpensesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,23 +17,23 @@ public class ExpensesController {
     @Autowired
     ExpensesService expensesService;
 
-    @PostMapping
-    ResponseEntity<Expenses> createExpenses(@RequestBody Expenses expenses) {
-        Expenses resp = expensesService.createExpenses(expenses);
+    @PostMapping("/create")
+    ResponseEntity<Expense> createExpenses(@RequestBody ExpenseDto expenses) {
+        Expense resp = expensesService.createExpenses(expenses);
         if (resp != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(resp);
         } else {
-            return (ResponseEntity<Expenses>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
+            return (ResponseEntity<Expense>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Expenses> getExpenses(@PathVariable("id ") Long id) {
-        Expenses res = expensesService.getExpenses(id);
+    ResponseEntity<Expense> getExpenses(@PathVariable("id ") Long id) {
+        Expense res = expensesService.getExpenses(id);
         if (res != null) {
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } else {
-            return (ResponseEntity<Expenses>) ResponseEntity.status(HttpStatus.NOT_FOUND);
+            return (ResponseEntity<Expense>) ResponseEntity.status(HttpStatus.NOT_FOUND);
         }
 
 

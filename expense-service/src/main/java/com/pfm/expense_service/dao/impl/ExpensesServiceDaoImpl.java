@@ -1,8 +1,9 @@
 package com.pfm.expense_service.dao.impl;
 
-import com.pfm.expense_service.dao.ExpensesRepo;
+
+import com.pfm.expense_service.dao.ExpenseRepository;
 import com.pfm.expense_service.dao.ExpensesServiceDao;
-import com.pfm.expense_service.model.Expenses;
+import com.pfm.expense_service.model.Expense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,17 +13,17 @@ import java.util.Optional;
 public class ExpensesServiceDaoImpl implements ExpensesServiceDao {
 
     @Autowired
-    ExpensesRepo expensesRepo;
+    ExpenseRepository expensesRepo;
 
     @Override
-    public Expenses createExpenses(Expenses expenses) {
-        Expenses exp = expensesRepo.save(expenses);
-        return exp;
+    public Expense createExpenses(Expense expenses) {
+        Expense expense = expensesRepo.save(expenses);
+        return expense;
     }
 
     @Override
-    public Expenses getExpenses(Long id) {
-        Optional<Expenses> getExpenses = expensesRepo.findById(id);
+    public Expense getExpenses(Long id) {
+        Optional<Expense> getExpenses = expensesRepo.findById(id);
         return getExpenses.get();
     }
 }

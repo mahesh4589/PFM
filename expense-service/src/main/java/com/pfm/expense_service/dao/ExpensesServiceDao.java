@@ -1,9 +1,9 @@
 package com.pfm.expense_service.dao;
 
-import com.pfm.expense_service.model.Expenses;
+import com.pfm.expense_service.model.Expense;
 
 public interface ExpensesServiceDao {
-    Expenses createExpenses(Expenses expenses);
+    Expense createExpenses(Expense expenses);
 
-     Expenses getExpenses(Long id);
+     Expense getExpenses(Long id);
 }

@@ -1,4 +1,4 @@
-package com.pfm.expense_service;
+package com.pfm.budgetService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,11 +7,11 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "com.pfm.expense_service")
-public class ExpenseServiceApplication {
+@EnableFeignClients(basePackages = "com.pfm.budgetService")
+public class BudgetServiceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ExpenseServiceApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(BudgetServiceApplication.class, args);
+	}
 
 }

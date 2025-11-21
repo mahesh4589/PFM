@@ -2,6 +2,11 @@ package com.pfm.notification_service.model.dto;
 
 public class UserDto {
     Long id;
+    String firstName;
+    String lastName;
+    String emailId;
+    String password;
+    long mobileNo;
 
     public UserDto(Long id, String firstName, String lastName, String emailId, String password, long mobileNo) {
         this.id = id;
@@ -12,16 +17,11 @@ public class UserDto {
         this.mobileNo = mobileNo;
     }
 
-    public  UserDto()
+    public UserDto()
     {
 
     }
 
-    String firstName;
-    String lastName;
-    String emailId;
-    String password;
-    long mobileNo;
 
     public Long getId() {
         return id;
